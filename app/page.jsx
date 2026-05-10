@@ -164,7 +164,7 @@ export default function Portfolio() {
   ];
 
   const projects = [
-    { title: "privtrain-demo", desc: "Privacy-preserving ML training system with differential privacy", tags: ["Python", "ML", "Privacy"], link: "https://github.com/20R01A67E6/privtrain-demo" },
+    { title: "privtrain-demo", desc: "Privacy-preserving ML training system with differential privacy", tags: ["Python", "ML", "Privacy"], link: "https://privtrain-demo.vercel.app/" },
     { title: "YOLO Face Detection", desc: "Real-time face detection system using YOLO architecture", tags: ["YOLO", "OpenCV", "Deep Learning"], link: "https://github.com/20R01A67E6/YOLO-face-detection" }
   ];
 

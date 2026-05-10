@@ -388,7 +388,7 @@ export default function Portfolio() {
         </nav>
 
         {/* Hero */}
-        <section id="home" className="hero-section" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0 3rem', maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+        <section id="home" className="hero-section" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0 3rem', maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1, paddingBottom: '5rem' }}>
           <div className="floating-shape" style={{ top: '15%', right: '10%', width: '6px', height: '6px', background: 'rgba(212, 175, 55, 0.3)', animationDelay: '0s' }} />
           <div className="floating-shape" style={{ top: '60%', right: '20%', width: '4px', height: '4px', background: 'rgba(212, 175, 55, 0.2)', animationDelay: '2s' }} />
           <div className="floating-shape" style={{ top: '40%', right: '5%', width: '8px', height: '8px', border: '1px solid rgba(212, 175, 55, 0.15)', background: 'transparent', animationDelay: '4s' }} />
@@ -429,7 +429,18 @@ export default function Portfolio() {
               onMouseLeave={(e) => { e.target.style.background = 'transparent'; }}>↓ Resume</a>
           </div>
 
-          {/* Scroll indicator removed - was overlapping with buttons */}
+          {/* Scroll indicator - fades out on scroll */}
+          <div style={{
+            position: 'absolute', bottom: '1rem', left: '50%', transform: 'translateX(-50%)',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem',
+            animation: 'float 3s ease-in-out infinite',
+            opacity: Math.max(0, 1 - scrollY / 200),
+            transition: 'opacity 0.3s ease',
+            pointerEvents: scrollY > 50 ? 'none' : 'auto'
+          }}>
+            <span style={{ color: '#555', fontSize: '0.7rem', letterSpacing: '2px', textTransform: 'uppercase' }}>Scroll</span>
+            <div style={{ width: '1px', height: '25px', background: 'linear-gradient(to bottom, #d4af37, transparent)' }} />
+          </div>
         </section>
 
         {/* Stats */}

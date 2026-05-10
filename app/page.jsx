@@ -57,7 +57,7 @@ export default function Portfolio() {
   useEffect(() => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
-      const sections = ['home', 'about', 'experience', 'skills', 'certifications', 'projects', 'contact'];
+      const sections = ['home', 'about', 'experience', 'skills', 'projects', 'certifications', 'contact'];
       for (let i = sections.length - 1; i >= 0; i--) {
         const el = document.getElementById(sections[i]);
         if (el && el.getBoundingClientRect().top < 300) { setActiveNav(sections[i]); break; }
@@ -359,7 +359,7 @@ export default function Portfolio() {
 
           {/* Desktop Nav */}
           <div className="desktop-nav">
-            {['Home', 'About', 'Experience', 'Skills', 'Projects', 'Contact'].map((item) => (
+            {['Home', 'About', 'Experience', 'Skills', 'Projects', 'Certifications', 'Contact'].map((item) => (
               <button key={item} onClick={() => scrollTo(item.toLowerCase())}
                 className={`nav-item ${activeNav === item.toLowerCase() ? 'nav-active' : ''}`}
                 style={{ background: 'none', border: 'none', color: activeNav === item.toLowerCase() ? '#d4af37' : '#777', fontSize: '0.85rem', fontWeight: '400', letterSpacing: '1.5px', textTransform: 'uppercase', fontFamily: "'DM Sans', sans-serif", padding: '0.25rem 0', cursor: 'pointer' }}>
@@ -378,7 +378,7 @@ export default function Portfolio() {
 
           {/* Mobile Nav */}
           <div className={`mobile-nav ${menuOpen ? 'open' : ''}`}>
-            {['Home', 'About', 'Experience', 'Skills', 'Projects', 'Contact'].map((item) => (
+            {['Home', 'About', 'Experience', 'Skills', 'Projects', 'Certifications', 'Contact'].map((item) => (
               <button key={item} onClick={() => scrollTo(item.toLowerCase())}
                 style={{ background: 'none', border: 'none', color: activeNav === item.toLowerCase() ? '#d4af37' : '#888', fontSize: '1.1rem', fontWeight: '400', letterSpacing: '2px', textTransform: 'uppercase', fontFamily: "'DM Sans', sans-serif", padding: '1rem 0', cursor: 'pointer', textAlign: 'left', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
                 {item}
@@ -419,6 +419,14 @@ export default function Portfolio() {
               style={{ padding: '1rem 2.5rem', background: 'transparent', color: '#d4af37', border: '1px solid rgba(212, 175, 55, 0.3)', borderRadius: '3px', fontSize: '0.85rem', fontWeight: '500', textDecoration: 'none', letterSpacing: '2px', textTransform: 'uppercase', fontFamily: "'DM Sans', sans-serif", transition: 'all 0.3s ease', textAlign: 'center' }}
               onMouseEnter={(e) => { e.target.style.background = 'rgba(212, 175, 55, 0.08)'; }}
               onMouseLeave={(e) => { e.target.style.background = 'transparent'; }}>LinkedIn</a>
+            <a href="/resume.pdf" download style={{
+              padding: '1rem 2.5rem', background: 'transparent', color: '#d4af37',
+              border: '1px solid rgba(212, 175, 55, 0.3)', borderRadius: '3px', fontSize: '0.85rem',
+              fontWeight: '500', textDecoration: 'none', letterSpacing: '2px', textTransform: 'uppercase',
+              fontFamily: "'DM Sans', sans-serif", transition: 'all 0.3s ease', textAlign: 'center'
+            }}
+              onMouseEnter={(e) => { e.target.style.background = 'rgba(212, 175, 55, 0.08)'; }}
+              onMouseLeave={(e) => { e.target.style.background = 'transparent'; }}>↓ Resume</a>
           </div>
 
           <div className="scroll-indicator" style={{ position: 'absolute', bottom: '3rem', left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', animation: 'float 3s ease-in-out infinite' }}>
@@ -527,34 +535,6 @@ export default function Portfolio() {
           </div>
         </section>
 
-        {/* Certifications */}
-        <section id="certifications" data-animate className="section-pad" style={{
-          padding: '8rem 3rem', maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1,
-          opacity: vis('certifications') ? 1 : 0, transform: vis('certifications') ? 'none' : 'translateY(40px)', transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)'
-        }}>
-          <p style={{ color: '#d4af37', fontSize: '0.82rem', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '1rem' }}>Achievements</p>
-          <h2 className="section-heading" style={{ fontFamily: "'Playfair Display', serif", fontSize: '3rem', fontWeight: '500', marginBottom: '1rem', color: '#e8e6e3' }}>Certifications</h2>
-          <div style={{ width: '80px', height: '2px', background: 'linear-gradient(90deg, #d4af37, transparent)', marginBottom: '4rem' }} />
-
-          {loadingCerts ? (
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              {[0,1,2].map(i => <div key={i} style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#d4af37', animation: `pulse 1.2s infinite ${i * 0.2}s` }} />)}
-            </div>
-          ) : certificates.length > 0 ? (
-            <div className="certs-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem' }}>
-              {certificates.map((cert, i) => (
-                <a key={i} href={cert.webViewLink} target="_blank" rel="noopener noreferrer" className="cert-card"
-                  style={{ padding: '2rem', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '4px', background: 'rgba(255,255,255,0.015)', textDecoration: 'none', color: 'inherit', display: 'block' }}>
-                  <h4 style={{ fontSize: '1.05rem', fontWeight: '500', color: '#e8e6e3', marginBottom: '0.75rem', lineHeight: 1.4 }}>{cert.name}</h4>
-                  <span style={{ color: '#d4af37', fontSize: '0.85rem' }}>View Certificate →</span>
-                </a>
-              ))}
-            </div>
-          ) : (
-            <p style={{ color: '#555', fontSize: '1rem', fontStyle: 'italic' }}>Certifications coming soon.</p>
-          )}
-        </section>
-
         {/* Projects */}
         <section id="projects" data-animate className="section-pad" style={{
           padding: '8rem 3rem', maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1,
@@ -583,6 +563,34 @@ export default function Portfolio() {
               </a>
             ))}
           </div>
+        </section>
+
+        {/* Certifications */}
+        <section id="certifications" data-animate className="section-pad" style={{
+          padding: '8rem 3rem', maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1,
+          opacity: vis('certifications') ? 1 : 0, transform: vis('certifications') ? 'none' : 'translateY(40px)', transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)'
+        }}>
+          <p style={{ color: '#d4af37', fontSize: '0.82rem', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '1rem' }}>Achievements</p>
+          <h2 className="section-heading" style={{ fontFamily: "'Playfair Display', serif", fontSize: '3rem', fontWeight: '500', marginBottom: '1rem', color: '#e8e6e3' }}>Certifications</h2>
+          <div style={{ width: '80px', height: '2px', background: 'linear-gradient(90deg, #d4af37, transparent)', marginBottom: '4rem' }} />
+
+          {loadingCerts ? (
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              {[0,1,2].map(i => <div key={i} style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#d4af37', animation: `pulse 1.2s infinite ${i * 0.2}s` }} />)}
+            </div>
+          ) : certificates.length > 0 ? (
+            <div className="certs-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem' }}>
+              {certificates.map((cert, i) => (
+                <a key={i} href={cert.webViewLink} target="_blank" rel="noopener noreferrer" className="cert-card"
+                  style={{ padding: '2rem', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '4px', background: 'rgba(255,255,255,0.015)', textDecoration: 'none', color: 'inherit', display: 'block' }}>
+                  <h4 style={{ fontSize: '1.05rem', fontWeight: '500', color: '#e8e6e3', marginBottom: '0.75rem', lineHeight: 1.4 }}>{cert.name}</h4>
+                  <span style={{ color: '#d4af37', fontSize: '0.85rem' }}>View Certificate →</span>
+                </a>
+              ))}
+            </div>
+          ) : (
+            <p style={{ color: '#555', fontSize: '1rem', fontStyle: 'italic' }}>Certifications coming soon.</p>
+          )}
         </section>
 
         {/* Contact */}
@@ -620,8 +628,9 @@ export default function Portfolio() {
           <div className="footer-inner" style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <p style={{ color: '#444', fontSize: '0.9rem', fontWeight: '300' }}>© 2026 Abhinav Reddy Kandula</p>
             <div style={{ display: 'flex', gap: '2.5rem' }}>
-              {[{ label: 'GitHub', url: 'https://github.com/20R01A67E6' }, { label: 'LinkedIn', url: 'https://www.linkedin.com/in/kandula-abhinav-reddy' }, { label: 'Email', url: 'mailto:abhinavjsearch@gmail.com' }].map((l) => (
-                <a key={l.label} href={l.url} target={l.url.startsWith('mailto') ? undefined : '_blank'} rel="noopener noreferrer" className="footer-link"
+              {[{ label: 'GitHub', url: 'https://github.com/20R01A67E6' }, { label: 'LinkedIn', url: 'https://www.linkedin.com/in/kandula-abhinav-reddy' }, { label: 'Resume', url: '/resume.pdf' }, { label: 'Email', url: 'mailto:abhinavjsearch@gmail.com' }].map((l) => (
+                <a key={l.label} href={l.url} target={l.url.startsWith('mailto') || l.url.startsWith('/') ? undefined : '_blank'} rel="noopener noreferrer" className="footer-link"
+                  download={l.url.endsWith('.pdf') ? true : undefined}
                   style={{ color: '#555', textDecoration: 'none', fontSize: '0.85rem', letterSpacing: '1.5px', textTransform: 'uppercase' }}
                   onMouseEnter={(e) => e.target.style.color = '#d4af37'} onMouseLeave={(e) => e.target.style.color = '#555'}>
                   {l.label}

@@ -419,7 +419,7 @@ export default function Portfolio() {
               style={{ padding: '1rem 2.5rem', background: 'transparent', color: '#d4af37', border: '1px solid rgba(212, 175, 55, 0.3)', borderRadius: '3px', fontSize: '0.85rem', fontWeight: '500', textDecoration: 'none', letterSpacing: '2px', textTransform: 'uppercase', fontFamily: "'DM Sans', sans-serif", transition: 'all 0.3s ease', textAlign: 'center' }}
               onMouseEnter={(e) => { e.target.style.background = 'rgba(212, 175, 55, 0.08)'; }}
               onMouseLeave={(e) => { e.target.style.background = 'transparent'; }}>LinkedIn</a>
-            <a href="/resume.pdf" download style={{
+            <a href="/resume.pdf" download="Abhinav Reddy Kandula Resume.pdf" style={{
               padding: '1rem 2.5rem', background: 'transparent', color: '#d4af37',
               border: '1px solid rgba(212, 175, 55, 0.3)', borderRadius: '3px', fontSize: '0.85rem',
               fontWeight: '500', textDecoration: 'none', letterSpacing: '2px', textTransform: 'uppercase',
@@ -429,10 +429,7 @@ export default function Portfolio() {
               onMouseLeave={(e) => { e.target.style.background = 'transparent'; }}>↓ Resume</a>
           </div>
 
-          <div className="scroll-indicator" style={{ position: 'absolute', bottom: '3rem', left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', animation: 'float 3s ease-in-out infinite' }}>
-            <span style={{ color: '#555', fontSize: '0.75rem', letterSpacing: '2px', textTransform: 'uppercase' }}>Scroll</span>
-            <div style={{ width: '1px', height: '30px', background: 'linear-gradient(to bottom, #d4af37, transparent)' }} />
-          </div>
+          {/* Scroll indicator removed - was overlapping with buttons */}
         </section>
 
         {/* Stats */}
@@ -630,7 +627,7 @@ export default function Portfolio() {
             <div style={{ display: 'flex', gap: '2.5rem' }}>
               {[{ label: 'GitHub', url: 'https://github.com/20R01A67E6' }, { label: 'LinkedIn', url: 'https://www.linkedin.com/in/kandula-abhinav-reddy' }, { label: 'Resume', url: '/resume.pdf' }, { label: 'Email', url: 'mailto:abhinavjsearch@gmail.com' }].map((l) => (
                 <a key={l.label} href={l.url} target={l.url.startsWith('mailto') || l.url.startsWith('/') ? undefined : '_blank'} rel="noopener noreferrer" className="footer-link"
-                  download={l.url.endsWith('.pdf') ? true : undefined}
+                  download={l.url.endsWith('.pdf') ? "Abhinav Reddy Kandula Resume.pdf" : undefined}
                   style={{ color: '#555', textDecoration: 'none', fontSize: '0.85rem', letterSpacing: '1.5px', textTransform: 'uppercase' }}
                   onMouseEnter={(e) => e.target.style.color = '#d4af37'} onMouseLeave={(e) => e.target.style.color = '#555'}>
                   {l.label}

@@ -117,14 +117,14 @@ export default function Portfolio() {
       period: "Jan 2026 — Present",
       location: "West Chester, OH",
       highlights: [
-        "Architected and developed core Python modules for the IrisX platform — an automated engineering drawing analysis system that processes complex CAD drawings",
-        "Implemented YOLO11s-pose and YOLO12m object detection models for real-time GD&T (Geometric Dimensioning & Tolerancing) symbol recognition, increasing company efficiency by 15%",
-        "Designed and built an end-to-end synthetic data pipeline generating 100K+ annotated training images with realistic noise, rotation, and scale variations",
-        "Orchestrated distributed multi-GPU model training across 8× NVIDIA RTX 5090 GPUs on Vast.ai cloud infrastructure, reducing training time by 6x",
-        "Developed a production-grade Flask REST API enabling batch document processing with concurrent model inference and queue-based job management",
-        "Integrated OCR text extraction with symbol detection pipeline for comprehensive drawing analysis and automated compliance checking",
-        "Implemented model versioning, A/B testing framework, and performance monitoring dashboards for continuous model improvement",
-        "Collaborated with mechanical engineers to refine detection accuracy for industry-specific symbols and annotation standards"
+        "Built the core Python engine behind IrisX, a platform that automates engineering drawing analysis for manufacturing clients. Before IrisX, engineers spent hours manually reviewing technical drawings for compliance. Now the system handles it in minutes.",
+        "Trained and fine-tuned over 10 YOLO-based object detection models from scratch, including YOLO11s-pose and YOLO12m, to recognize GD&T symbols on complex engineering blueprints. Went through multiple iterations of data collection, labeling, and hyperparameter tuning to get production-ready results.",
+        "Designed a synthetic data generation pipeline that produced over 100,000 annotated training images with realistic noise, rotation, and scale variations, solving the problem of limited real-world labeled data.",
+        "Set up distributed model training across cloud GPUs on Vast.ai, cutting training cycles from days to hours and enabling rapid experimentation with new model architectures.",
+        "Developed a Flask REST API for batch document processing that handles concurrent inference requests, allowing multiple engineers to submit drawings for analysis simultaneously.",
+        "Integrated OCR text extraction with the symbol detection pipeline so the system could read both visual symbols and written annotations from a single drawing.",
+        "Built model versioning and monitoring dashboards so the team could track performance metrics across different model iterations and catch regressions early.",
+        "Worked closely with mechanical engineers to understand real-world edge cases and refine detection accuracy for industry-specific annotation standards."
       ]
     },
     {
@@ -133,16 +133,16 @@ export default function Portfolio() {
       period: "May 2025 — Apr 2026",
       location: "Cincinnati, OH",
       highlights: [
-        "Supervised and coordinated team workflows across multiple research projects involving dataset curation and annotation",
-        "Automated weekly operations reporting using Python scripts and built interactive dashboards for real-time project tracking",
-        "Managed large-scale dataset pipelines for academic research, ensuring data quality and version control across collaborators"
+        "Coordinated team workflows across multiple research projects, managing dataset curation and annotation pipelines that supported ongoing academic research.",
+        "Built Python automation scripts that replaced manual weekly reporting, saving the team roughly 4 hours per week and generating interactive dashboards for real-time project tracking.",
+        "Maintained large-scale dataset pipelines, ensuring data quality, proper version control, and smooth handoffs between collaborators working on shared research datasets."
       ]
     }
   ];
 
   const projects = [
-    { title: "privtrain-demo", desc: "Privacy-preserving ML training system with differential privacy guarantees for sensitive data", tags: ["Python", "ML", "Privacy"], link: "https://privtrain-demo.vercel.app/" },
-    { title: "YOLO Face Detection", desc: "Real-time face detection system using YOLO architecture with live webcam inference", tags: ["YOLO", "OpenCV", "Deep Learning"], link: "https://github.com/20R01A67E6/YOLO-face-detection" }
+    { title: "privtrain-demo", desc: "An end-to-end privacy-preserving machine learning training system. Built this to explore how differential privacy can protect sensitive training data without sacrificing model accuracy. The demo walks through the full pipeline from data preprocessing to private model training and evaluation.", tags: ["Python", "ML", "Differential Privacy"], link: "https://privtrain-demo.vercel.app/" },
+    { title: "YOLO Face Detection", desc: "A real-time face detection system built with the YOLO architecture. Takes live webcam input and identifies faces with bounding boxes at 30+ FPS. Trained on custom datasets and optimized for low-latency inference, making it practical for real-world applications like attendance tracking.", tags: ["YOLO", "OpenCV", "Deep Learning"], link: "https://github.com/20R01A67E6/YOLO-face-detection" }
   ];
 
   const skillBars = [
@@ -438,7 +438,7 @@ export default function Portfolio() {
             transition: 'opacity 0.3s ease',
             pointerEvents: scrollY > 50 ? 'none' : 'auto'
           }}>
-            <span style={{ color: '#555', fontSize: '0.7rem', letterSpacing: '2px', textTransform: 'uppercase' }}>Scroll</span>
+            <span style={{ color: '#555', fontSize: '0.7rem', letterSpacing: '2px', textTransform: 'uppercase' }}>There's more below</span>
             <div style={{ width: '1px', height: '25px', background: 'linear-gradient(to bottom, #d4af37, transparent)' }} />
           </div>
         </section>
@@ -474,10 +474,10 @@ export default function Portfolio() {
                 It started with a simple curiosity — how do machines learn to see? That question led me from writing my first Python script to training deep learning models on multi-GPU clusters. What began as late-night experiments with image classification evolved into a genuine obsession with making computers understand the visual world the way we do.
               </p>
               <p style={{ fontSize: '1.05rem', lineHeight: 2, color: '#888', marginBottom: '1.5rem', fontWeight: '300' }}>
-                Today, I'm at Analysis Express, where I get to live that obsession every day. I build systems that read complex engineering drawings — something even experienced engineers find tedious — and turn them into structured, actionable data in seconds. When I saw our models increase the company's operational efficiency by 15%, I knew this was exactly where I was meant to be.
+                Today at Analysis Express, I get to live that obsession every day. I build systems that read complex engineering drawings, something even experienced engineers find tedious, and turn them into structured, actionable data in seconds. When I saw our automation pipeline cut manual review time by 15% across the team, I knew this was exactly where I was meant to be.
               </p>
               <p style={{ fontSize: '1.05rem', lineHeight: 2, color: '#888', fontWeight: '300' }}>
-                But I'm not just about AI. I love the entire journey from idea to deployment — designing clean APIs, crafting intuitive interfaces, and making sure the whole system works seamlessly. Whether it's generating 100K synthetic training images or building a React dashboard, I bring the same energy: build it right, make it beautiful, and never stop learning.
+                But I'm not just about AI. I love the entire journey from idea to deployment. Designing clean APIs, crafting intuitive interfaces, shipping products that real people rely on. Whether it's generating 100K training images from scratch or deploying a full-stack app on Vercel, I bring the same energy to everything I build.
               </p>
             </div>
           </div>

@@ -25,6 +25,7 @@ export default function Portfolio() {
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
+    if (!mounted) return;
     const currentTitle = titles[titleIndex];
     const timeout = setTimeout(() => {
       if (!isDeleting) {
@@ -43,7 +44,7 @@ export default function Portfolio() {
       }
     }, isDeleting ? 40 : 80);
     return () => clearTimeout(timeout);
-  }, [charIndex, isDeleting, titleIndex]);
+  }, [charIndex, isDeleting, titleIndex, mounted]);
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -406,7 +407,7 @@ export default function Portfolio() {
             animation: 'shimmer 5s linear infinite, fadeUp 1s ease-out 0.4s both'
           }}>Abhinav Reddy Kandula</h1>
           <div className="hero-anim-3 hero-typed" style={{ fontSize: '1.5rem', color: '#999', marginBottom: '2rem', fontWeight: '300', minHeight: '2.5rem' }}>
-            {typedText}<span className="typing-cursor" style={{ fontSize: '1.6rem', fontWeight: '300' }}>|</span>
+            {mounted ? typedText : ''}<span className="typing-cursor" style={{ fontSize: '1.6rem', fontWeight: '300' }}>|</span>
           </div>
           <p className="hero-anim-4" style={{ fontSize: '1.1rem', color: '#666', lineHeight: 1.9, maxWidth: '550px', marginBottom: '3rem', fontWeight: '300' }}>
             Building intelligent systems at the intersection of computer vision, deep learning, and scalable web applications.

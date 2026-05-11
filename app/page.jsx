@@ -15,6 +15,7 @@ export default function Portfolio() {
   const [typedText, setTypedText] = useState('');
   const [activeNav, setActiveNav] = useState('home');
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const cursorRef = useRef(null);
   const cursorDotRef = useRef(null);
 
@@ -43,6 +44,8 @@ export default function Portfolio() {
     }, isDeleting ? 40 : 80);
     return () => clearTimeout(timeout);
   }, [charIndex, isDeleting, titleIndex]);
+
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     const moveCursor = (e) => {
@@ -147,11 +150,15 @@ export default function Portfolio() {
 
   const skillBars = [
     { name: "Python", level: 95 },
-    { name: "Machine Learning", level: 88 },
-    { name: "Computer Vision", level: 85 },
+    { name: "Machine Learning / Deep Learning", level: 88 },
+    { name: "Computer Vision (YOLO, OpenCV)", level: 85 },
+    { name: "Agentic AI / LLM Orchestration", level: 80 },
     { name: "React / Next.js", level: 82 },
-    { name: "Docker / AWS", level: 78 },
-    { name: "Flask / Node.js", level: 80 },
+    { name: "Flask / Node.js / REST APIs", level: 80 },
+    { name: "Databases (PostgreSQL, Firebase, MongoDB)", level: 78 },
+    { name: "Docker / AWS / Cloud Infrastructure", level: 78 },
+    { name: "Java / C++ / SQL", level: 75 },
+    { name: "Git / CI-CD / Linux", level: 82 },
   ];
 
   const stats = [
@@ -166,8 +173,6 @@ export default function Portfolio() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap');
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body { background: #08080d; color: #e8e6e3; font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
@@ -335,8 +340,8 @@ export default function Portfolio() {
       `}</style>
 
       {/* Custom Cursor (desktop only) */}
-      <div ref={cursorRef} className="custom-cursor" />
-      <div ref={cursorDotRef} className="cursor-dot" />
+      {mounted && <div ref={cursorRef} className="custom-cursor" />}
+      {mounted && <div ref={cursorDotRef} className="cursor-dot" />}
 
       <div style={{ minHeight: '100vh', background: '#08080d', position: 'relative', overflowX: 'hidden' }}>
 
@@ -344,15 +349,15 @@ export default function Portfolio() {
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0 }}>
           <div style={{ position: 'absolute', top: '20%', left: '10%', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(212, 175, 55, 0.03) 0%, transparent 70%)', borderRadius: '50%' }} />
           <div style={{ position: 'absolute', bottom: '30%', right: '5%', width: '500px', height: '500px', background: 'radial-gradient(circle, rgba(100, 120, 180, 0.03) 0%, transparent 70%)', borderRadius: '50%' }} />
-          <div style={{ position: 'fixed', top: mousePos.y - 200, left: mousePos.x - 200, width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(212, 175, 55, 0.015) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none', transition: 'top 0.3s ease-out, left 0.3s ease-out' }} />
+          <div style={{ position: 'fixed', top: mounted ? mousePos.y - 200 : -400, left: mounted ? mousePos.x - 200 : -400, width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(212, 175, 55, 0.015) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none', transition: 'top 0.3s ease-out, left 0.3s ease-out' }} />
         </div>
 
         {/* Navigation */}
         <nav className="nav-bar" style={{
           position: 'fixed', top: 0, width: '100%', zIndex: 100, padding: '1.25rem 3rem',
-          background: scrollY > 80 ? 'rgba(8, 8, 13, 0.95)' : 'transparent',
-          backdropFilter: scrollY > 80 ? 'blur(16px)' : 'none',
-          borderBottom: scrollY > 80 ? '1px solid rgba(212, 175, 55, 0.06)' : '1px solid transparent',
+          background: mounted && scrollY > 80 ? 'rgba(8, 8, 13, 0.95)' : 'transparent',
+          backdropFilter: mounted && scrollY > 80 ? 'blur(16px)' : 'none',
+          borderBottom: mounted && scrollY > 80 ? '1px solid rgba(212, 175, 55, 0.06)' : '1px solid transparent',
           transition: 'all 0.5s ease', display: 'flex', justifyContent: 'space-between', alignItems: 'center'
         }}>
           <div style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.6rem', fontWeight: '600', background: 'linear-gradient(135deg, #d4af37, #f4d03f)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', zIndex: 200 }}>ARK</div>
@@ -419,7 +424,7 @@ export default function Portfolio() {
               style={{ padding: '1rem 2.5rem', background: 'transparent', color: '#d4af37', border: '1px solid rgba(212, 175, 55, 0.3)', borderRadius: '3px', fontSize: '0.85rem', fontWeight: '500', textDecoration: 'none', letterSpacing: '2px', textTransform: 'uppercase', fontFamily: "'DM Sans', sans-serif", transition: 'all 0.3s ease', textAlign: 'center' }}
               onMouseEnter={(e) => { e.target.style.background = 'rgba(212, 175, 55, 0.08)'; }}
               onMouseLeave={(e) => { e.target.style.background = 'transparent'; }}>LinkedIn</a>
-            <a href="/resume.pdf" download="Abhinav Reddy Kandula Resume.pdf" style={{
+            <a href="/resume.pdf" download="Abhinav Reddy Resume.pdf" style={{
               padding: '1rem 2.5rem', background: 'transparent', color: '#d4af37',
               border: '1px solid rgba(212, 175, 55, 0.3)', borderRadius: '3px', fontSize: '0.85rem',
               fontWeight: '500', textDecoration: 'none', letterSpacing: '2px', textTransform: 'uppercase',
@@ -434,9 +439,9 @@ export default function Portfolio() {
             position: 'absolute', bottom: '1rem', left: '50%', transform: 'translateX(-50%)',
             display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem',
             animation: 'float 3s ease-in-out infinite',
-            opacity: Math.max(0, 1 - scrollY / 200),
+            opacity: mounted ? Math.max(0, 1 - scrollY / 200) : 0,
             transition: 'opacity 0.3s ease',
-            pointerEvents: scrollY > 50 ? 'none' : 'auto'
+            pointerEvents: mounted && scrollY > 50 ? 'none' : 'auto'
           }}>
             <span style={{ color: '#555', fontSize: '0.7rem', letterSpacing: '2px', textTransform: 'uppercase' }}>There's more below</span>
             <div style={{ width: '1px', height: '25px', background: 'linear-gradient(to bottom, #d4af37, transparent)' }} />
@@ -638,7 +643,7 @@ export default function Portfolio() {
             <div style={{ display: 'flex', gap: '2.5rem' }}>
               {[{ label: 'GitHub', url: 'https://github.com/20R01A67E6' }, { label: 'LinkedIn', url: 'https://www.linkedin.com/in/kandula-abhinav-reddy' }, { label: 'Resume', url: '/resume.pdf' }, { label: 'Email', url: 'mailto:abhinavjsearch@gmail.com' }].map((l) => (
                 <a key={l.label} href={l.url} target={l.url.startsWith('mailto') || l.url.startsWith('/') ? undefined : '_blank'} rel="noopener noreferrer" className="footer-link"
-                  download={l.url.endsWith('.pdf') ? "Abhinav Reddy Kandula Resume.pdf" : undefined}
+                  download={l.url.endsWith('.pdf') ? "Abhinav Reddy Resume.pdf" : undefined}
                   style={{ color: '#555', textDecoration: 'none', fontSize: '0.85rem', letterSpacing: '1.5px', textTransform: 'uppercase' }}
                   onMouseEnter={(e) => e.target.style.color = '#d4af37'} onMouseLeave={(e) => e.target.style.color = '#555'}>
                   {l.label}

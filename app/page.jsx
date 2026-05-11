@@ -24,6 +24,10 @@ export default function Portfolio() {
   const [charIndex, setCharIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  // Mount check
+  useEffect(() => { setMounted(true); }, []);
+
+  // Typing animation
   useEffect(() => {
     if (!mounted) return;
     const currentTitle = titles[titleIndex];
@@ -31,23 +35,17 @@ export default function Portfolio() {
       if (!isDeleting) {
         setTypedText(currentTitle.substring(0, charIndex + 1));
         setCharIndex(charIndex + 1);
-        if (charIndex + 1 === currentTitle.length) {
-          setTimeout(() => setIsDeleting(true), 2000);
-        }
+        if (charIndex + 1 === currentTitle.length) setTimeout(() => setIsDeleting(true), 2000);
       } else {
         setTypedText(currentTitle.substring(0, charIndex - 1));
         setCharIndex(charIndex - 1);
-        if (charIndex - 1 === 0) {
-          setIsDeleting(false);
-          setTitleIndex((titleIndex + 1) % titles.length);
-        }
+        if (charIndex - 1 === 0) { setIsDeleting(false); setTitleIndex((titleIndex + 1) % titles.length); }
       }
     }, isDeleting ? 40 : 80);
     return () => clearTimeout(timeout);
   }, [charIndex, isDeleting, titleIndex, mounted]);
 
-  useEffect(() => { setMounted(true); }, []);
-
+  // Custom cursor
   useEffect(() => {
     const moveCursor = (e) => {
       setMousePos({ x: e.clientX, y: e.clientY });
@@ -58,6 +56,7 @@ export default function Portfolio() {
     return () => window.removeEventListener('mousemove', moveCursor);
   }, []);
 
+  // Scroll tracking + active nav
   useEffect(() => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
@@ -71,6 +70,7 @@ export default function Portfolio() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Intersection observer
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => entries.forEach((e) => {
@@ -82,6 +82,7 @@ export default function Portfolio() {
     return () => observer.disconnect();
   }, []);
 
+  // API calls
   useEffect(() => {
     fetch('/api/trackVisit', { method: 'POST' }).catch(() => {});
     (async () => {
@@ -109,11 +110,17 @@ export default function Portfolio() {
     finally { setLoading(false); }
   };
 
-  const scrollTo = (id) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-    setMenuOpen(false);
+  const scrollTo = (id) => { document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); setMenuOpen(false); };
+
+  const handleCardGlow = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    e.currentTarget.style.setProperty('--mouse-x', `${((e.clientX - rect.left) / rect.width) * 100}%`);
+    e.currentTarget.style.setProperty('--mouse-y', `${((e.clientY - rect.top) / rect.height) * 100}%`);
   };
 
+  const vis = (id) => visibleSections[id];
+
+  // ===== DATA =====
   const experiences = [
     {
       title: "Software Engineer Intern",
@@ -169,206 +176,39 @@ export default function Portfolio() {
     { number: "10+", label: "Projects Built" }
   ];
 
-  const vis = (id) => visibleSections[id];
+  const navItems = ['Home', 'About', 'Experience', 'Skills', 'Projects', 'Certifications', 'Contact'];
 
   return (
     <>
-      <style>{`
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body { background: #08080d; color: #e8e6e3; font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
-
-        ::selection { background: rgba(212, 175, 55, 0.3); }
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: #08080d; }
-        ::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.25); border-radius: 10px; }
-
-        .custom-cursor {
-          width: 40px; height: 40px; border: 1px solid rgba(212, 175, 55, 0.4);
-          border-radius: 50%; position: fixed; top: 0; left: 0;
-          pointer-events: none; z-index: 9999;
-          transition: transform 0.15s ease-out;
-          mix-blend-mode: difference;
-        }
-        .cursor-dot {
-          width: 8px; height: 8px; background: #d4af37;
-          border-radius: 50%; position: fixed; top: 0; left: 0;
-          pointer-events: none; z-index: 10000;
-          transition: transform 0.08s ease-out;
-        }
-
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-        @keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
-        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-15px); } }
-        @keyframes barFill { from { width: 0%; } }
-        @keyframes borderGlow { 0%, 100% { border-color: rgba(212, 175, 55, 0.1); } 50% { border-color: rgba(212, 175, 55, 0.3); } }
-
-        .hero-anim-1 { animation: fadeUp 1s ease-out 0.2s both; }
-        .hero-anim-2 { animation: fadeUp 1s ease-out 0.4s both; }
-        .hero-anim-3 { animation: fadeUp 1s ease-out 0.6s both; }
-        .hero-anim-4 { animation: fadeUp 1s ease-out 0.8s both; }
-        .hero-anim-5 { animation: fadeUp 1s ease-out 1s both; }
-
-        .typing-cursor { animation: pulse 0.8s infinite; color: #d4af37; }
-
-        .nav-item { position: relative; transition: color 0.3s; }
-        .nav-item::after {
-          content: ''; position: absolute; bottom: -6px; left: 50%; width: 0; height: 2px;
-          background: #d4af37; transition: all 0.3s ease; transform: translateX(-50%);
-        }
-        .nav-item:hover::after, .nav-active::after { width: 100%; }
-        .nav-active { color: #d4af37 !important; }
-
-        .glow-card {
-          position: relative; overflow: hidden;
-          transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .glow-card::before {
-          content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-          background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(212, 175, 55, 0.06) 0%, transparent 60%);
-          pointer-events: none; opacity: 0; transition: opacity 0.3s;
-        }
-        .glow-card:hover::before { opacity: 1; }
-        .glow-card:hover {
-          transform: translateY(-8px);
-          border-color: rgba(212, 175, 55, 0.25);
-          box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5), 0 0 40px rgba(212, 175, 55, 0.05);
-        }
-
-        .skill-bar-fill {
-          animation: barFill 1.5s ease-out both;
-          position: relative; overflow: hidden;
-        }
-        .skill-bar-fill::after {
-          content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-          animation: shimmer 2s infinite;
-        }
-
-        .stat-card { transition: all 0.4s ease; animation: borderGlow 3s infinite; }
-        .stat-card:hover { transform: scale(1.05); background: rgba(212, 175, 55, 0.05); }
-
-        .floating-shape { position: absolute; border-radius: 50%; animation: float 6s ease-in-out infinite; pointer-events: none; }
-
-        .input-glow { transition: all 0.3s ease; }
-        .input-glow:focus {
-          outline: none; border-color: rgba(212, 175, 55, 0.4);
-          box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.08), 0 0 20px rgba(212, 175, 55, 0.05);
-        }
-
-        .submit-glow { transition: all 0.4s ease; position: relative; overflow: hidden; }
-        .submit-glow::before {
-          content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-          transition: left 0.6s ease;
-        }
-        .submit-glow:hover::before { left: 100%; }
-        .submit-glow:hover { transform: translateY(-3px); box-shadow: 0 10px 40px rgba(212, 175, 55, 0.35); }
-
-        .cert-card { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-        .cert-card:hover { transform: translateY(-6px) scale(1.02); border-color: rgba(212, 175, 55, 0.3); box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
-
-        .footer-link { position: relative; transition: color 0.3s; }
-        .footer-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 1px; background: #d4af37; transition: width 0.3s; }
-        .footer-link:hover::after { width: 100%; }
-
-        /* Hamburger menu */
-        .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 5px; z-index: 200; }
-        .hamburger span { display: block; width: 24px; height: 2px; background: #d4af37; transition: all 0.3s ease; }
-        .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
-        .hamburger.open span:nth-child(2) { opacity: 0; }
-        .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
-
-        .desktop-nav { display: flex; gap: 2rem; align-items: center; }
-        .mobile-nav {
-          display: none; position: fixed; top: 0; right: -100%; width: 280px; height: 100vh;
-          background: rgba(8, 8, 13, 0.98); backdrop-filter: blur(20px);
-          flex-direction: column; padding: 6rem 2.5rem 2rem;
-          border-left: 1px solid rgba(212, 175, 55, 0.1);
-          transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 150;
-        }
-        .mobile-nav.open { right: 0; }
-        .mobile-overlay {
-          display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-          background: rgba(0,0,0,0.6); z-index: 140; opacity: 0; transition: opacity 0.3s;
-          pointer-events: none;
-        }
-        .mobile-overlay.open { opacity: 1; pointer-events: auto; }
-
-        /* ===== MOBILE RESPONSIVE ===== */
-        @media (max-width: 900px) {
-          body { cursor: auto; }
-          .custom-cursor, .cursor-dot { display: none !important; }
-          .desktop-nav { display: none !important; }
-          .hamburger { display: flex !important; }
-          .mobile-nav { display: flex !important; }
-          .mobile-overlay { display: block !important; }
-
-          .glow-card:hover { transform: none; }
-          .stat-card:hover { transform: none; }
-          .cert-card:hover { transform: none; }
-        }
-
-        @media (max-width: 768px) {
-          .hero-title-text { font-size: 2.8rem !important; }
-          .hero-typed { font-size: 1.15rem !important; }
-          .section-heading { font-size: 2rem !important; }
-          .about-grid { grid-template-columns: 1fr !important; gap: 2rem !important; }
-          .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
-          .skills-grid { grid-template-columns: 1fr !important; }
-          .projects-grid { grid-template-columns: 1fr !important; }
-          .certs-grid { grid-template-columns: 1fr !important; }
-          .contact-inputs { grid-template-columns: 1fr !important; }
-          .section-pad { padding: 4rem 1.25rem !important; }
-          .hero-section { padding: 0 1.25rem !important; }
-          .nav-bar { padding: 1rem 1.25rem !important; }
-          .footer-inner { flex-direction: column; gap: 1.5rem; text-align: center; }
-          .hero-buttons { flex-direction: column; }
-          .hero-buttons a, .hero-buttons button { width: 100%; text-align: center; }
-          .scroll-indicator { display: none !important; }
-          .exp-header { flex-direction: column !important; gap: 0.5rem !important; }
-          .exp-period { white-space: normal !important; }
-        }
-
-        @media (max-width: 480px) {
-          .hero-title-text { font-size: 2.2rem !important; }
-          .hero-typed { font-size: 1rem !important; }
-          .section-heading { font-size: 1.7rem !important; }
-          .stats-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 0.75rem !important; }
-          .stat-number { font-size: 1.8rem !important; }
-        }
-      `}</style>
-
-      {/* Custom Cursor (desktop only) */}
+      {/* Custom Cursor */}
       {mounted && <div ref={cursorRef} className="custom-cursor" />}
       {mounted && <div ref={cursorDotRef} className="cursor-dot" />}
 
-      <div style={{ minHeight: '100vh', background: '#08080d', position: 'relative', overflowX: 'hidden' }}>
+      <div className="min-h-screen bg-dark relative overflow-x-hidden">
 
         {/* Ambient Background */}
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0 }}>
-          <div style={{ position: 'absolute', top: '20%', left: '10%', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(212, 175, 55, 0.03) 0%, transparent 70%)', borderRadius: '50%' }} />
-          <div style={{ position: 'absolute', bottom: '30%', right: '5%', width: '500px', height: '500px', background: 'radial-gradient(circle, rgba(100, 120, 180, 0.03) 0%, transparent 70%)', borderRadius: '50%' }} />
-          <div style={{ position: 'fixed', top: mounted ? mousePos.y - 200 : -400, left: mounted ? mousePos.x - 200 : -400, width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(212, 175, 55, 0.015) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none', transition: 'top 0.3s ease-out, left 0.3s ease-out' }} />
+        <div className="fixed inset-0 pointer-events-none z-0">
+          <div className="absolute top-[20%] left-[10%] w-[400px] h-[400px] rounded-full" style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.03) 0%, transparent 70%)' }} />
+          <div className="absolute bottom-[30%] right-[5%] w-[500px] h-[500px] rounded-full" style={{ background: 'radial-gradient(circle, rgba(100,120,180,0.03) 0%, transparent 70%)' }} />
+          <div className="fixed w-[400px] h-[400px] rounded-full pointer-events-none transition-all duration-300 ease-out"
+            style={{ top: mounted ? mousePos.y - 200 : -400, left: mounted ? mousePos.x - 200 : -400, background: 'radial-gradient(circle, rgba(212,175,55,0.015) 0%, transparent 70%)' }} />
         </div>
 
         {/* Navigation */}
-        <nav className="nav-bar" style={{
-          position: 'fixed', top: 0, width: '100%', zIndex: 100, padding: '1.25rem 3rem',
-          background: mounted && scrollY > 80 ? 'rgba(8, 8, 13, 0.95)' : 'transparent',
-          backdropFilter: mounted && scrollY > 80 ? 'blur(16px)' : 'none',
-          borderBottom: mounted && scrollY > 80 ? '1px solid rgba(212, 175, 55, 0.06)' : '1px solid transparent',
-          transition: 'all 0.5s ease', display: 'flex', justifyContent: 'space-between', alignItems: 'center'
-        }}>
-          <div style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.6rem', fontWeight: '600', background: 'linear-gradient(135deg, #d4af37, #f4d03f)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', zIndex: 200 }}>ARK</div>
+        <nav className="nav-bar fixed top-0 w-full z-[100] px-12 py-5 flex justify-between items-center transition-all duration-500"
+          style={{
+            background: mounted && scrollY > 80 ? 'rgba(8,8,13,0.95)' : 'transparent',
+            backdropFilter: mounted && scrollY > 80 ? 'blur(16px)' : 'none',
+            borderBottom: mounted && scrollY > 80 ? '1px solid rgba(212,175,55,0.06)' : '1px solid transparent',
+          }}>
+          <div className="font-serif text-2xl font-semibold z-[200]" style={{ background: 'linear-gradient(135deg, #d4af37, #f4d03f)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>ARK</div>
 
           {/* Desktop Nav */}
-          <div className="desktop-nav">
-            {['Home', 'About', 'Experience', 'Skills', 'Projects', 'Certifications', 'Contact'].map((item) => (
+          <div className="desktop-nav flex gap-8 items-center">
+            {navItems.map((item) => (
               <button key={item} onClick={() => scrollTo(item.toLowerCase())}
-                className={`nav-item ${activeNav === item.toLowerCase() ? 'nav-active' : ''}`}
-                style={{ background: 'none', border: 'none', color: activeNav === item.toLowerCase() ? '#d4af37' : '#777', fontSize: '0.85rem', fontWeight: '400', letterSpacing: '1.5px', textTransform: 'uppercase', fontFamily: "'DM Sans', sans-serif", padding: '0.25rem 0', cursor: 'pointer' }}>
+                className={`nav-item ${activeNav === item.toLowerCase() ? 'nav-active' : ''} bg-transparent border-none text-sm font-normal tracking-widest uppercase font-sans py-1 cursor-pointer`}
+                style={{ color: activeNav === item.toLowerCase() ? '#d4af37' : '#777' }}>
                 {item}
               </button>
             ))}
@@ -379,143 +219,123 @@ export default function Portfolio() {
             <span /><span /><span />
           </button>
 
-          {/* Mobile Overlay */}
+          {/* Mobile Overlay + Nav */}
           <div className={`mobile-overlay ${menuOpen ? 'open' : ''}`} onClick={() => setMenuOpen(false)} />
-
-          {/* Mobile Nav */}
           <div className={`mobile-nav ${menuOpen ? 'open' : ''}`}>
-            {['Home', 'About', 'Experience', 'Skills', 'Projects', 'Certifications', 'Contact'].map((item) => (
+            {navItems.map((item) => (
               <button key={item} onClick={() => scrollTo(item.toLowerCase())}
-                style={{ background: 'none', border: 'none', color: activeNav === item.toLowerCase() ? '#d4af37' : '#888', fontSize: '1.1rem', fontWeight: '400', letterSpacing: '2px', textTransform: 'uppercase', fontFamily: "'DM Sans', sans-serif", padding: '1rem 0', cursor: 'pointer', textAlign: 'left', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                className="bg-transparent border-none text-left text-lg font-normal tracking-widest uppercase font-sans py-4 cursor-pointer border-b border-white/5"
+                style={{ color: activeNav === item.toLowerCase() ? '#d4af37' : '#888' }}>
                 {item}
               </button>
             ))}
           </div>
         </nav>
 
-        {/* Hero */}
-        <section id="home" className="hero-section" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0 3rem', maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1, paddingBottom: '5rem', paddingTop: '6rem' }}>
-          <div className="floating-shape" style={{ top: '15%', right: '10%', width: '6px', height: '6px', background: 'rgba(212, 175, 55, 0.3)', animationDelay: '0s' }} />
-          <div className="floating-shape" style={{ top: '60%', right: '20%', width: '4px', height: '4px', background: 'rgba(212, 175, 55, 0.2)', animationDelay: '2s' }} />
-          <div className="floating-shape" style={{ top: '40%', right: '5%', width: '8px', height: '8px', border: '1px solid rgba(212, 175, 55, 0.15)', background: 'transparent', animationDelay: '4s' }} />
+        {/* ===== HERO ===== */}
+        <section id="home" className="hero-section min-h-screen flex flex-col justify-center px-12 max-w-[1200px] mx-auto relative z-[1] pt-24 pb-20">
+          <div className="floating-shape top-[15%] right-[10%] w-1.5 h-1.5 bg-gold/30" />
+          <div className="floating-shape top-[60%] right-[20%] w-1 h-1 bg-gold/20" style={{ animationDelay: '2s' }} />
+          <div className="floating-shape top-[40%] right-[5%] w-2 h-2 border border-gold/15 bg-transparent" style={{ animationDelay: '4s' }} />
 
-          <p className="hero-anim-1" style={{ fontSize: '0.9rem', color: '#d4af37', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '2rem' }}>Welcome to my portfolio</p>
-          <h1 className="hero-anim-2 hero-title-text" style={{
-            fontFamily: "'Playfair Display', serif", fontSize: '5.5rem', fontWeight: '600', lineHeight: 1.05, marginBottom: '1.5rem', maxWidth: '800px',
-            background: 'linear-gradient(135deg, #e8e6e3 0%, #d4af37 40%, #f4d03f 60%, #e8e6e3 100%)', backgroundSize: '200% auto',
-            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-            animation: 'shimmer 5s linear infinite, fadeUp 1s ease-out 0.4s both'
-          }}>Abhinav Reddy Kandula</h1>
-          <div className="hero-anim-3 hero-typed" style={{ fontSize: '1.5rem', color: '#999', marginBottom: '2rem', fontWeight: '300', minHeight: '2.5rem' }}>
-            {mounted ? typedText : ''}<span className="typing-cursor" style={{ fontSize: '1.6rem', fontWeight: '300' }}>|</span>
+          <p className="hero-anim-1 text-sm text-gold tracking-[4px] uppercase mb-8">Welcome to my portfolio</p>
+
+          <h1 className="hero-anim-2 hero-shimmer hero-title font-serif text-[5.5rem] font-semibold leading-[1.05] mb-6 max-w-[800px]">
+            Abhinav Reddy Kandula
+          </h1>
+
+          <div className="hero-anim-3 hero-typed text-2xl text-gray-400 mb-8 font-light min-h-[2.5rem]">
+            {mounted ? typedText : ''}<span className="typing-cursor text-[1.6rem] font-light">|</span>
           </div>
-          <p className="hero-anim-4" style={{ fontSize: '1.1rem', color: '#666', lineHeight: 1.9, maxWidth: '550px', marginBottom: '3rem', fontWeight: '300' }}>
+
+          <p className="hero-anim-4 text-lg text-gray-500 leading-relaxed max-w-[550px] mb-12 font-light">
             Building intelligent systems at the intersection of computer vision, deep learning, and scalable web applications.
           </p>
-          <div className="hero-anim-5 hero-buttons" style={{ display: 'flex', gap: '1.5rem' }}>
-            <button onClick={() => scrollTo('contact')} className="submit-glow"
-              style={{ padding: '1rem 2.5rem', background: 'linear-gradient(135deg, #d4af37, #b8941e)', color: '#08080d', border: 'none', borderRadius: '3px', fontSize: '0.85rem', fontWeight: '600', letterSpacing: '2px', textTransform: 'uppercase', fontFamily: "'DM Sans', sans-serif", cursor: 'pointer' }}>
+
+          <div className="hero-anim-5 hero-buttons flex gap-6">
+            <button onClick={() => scrollTo('contact')}
+              className="submit-glow px-10 py-4 bg-gradient-to-br from-gold to-gold-dark text-dark border-none rounded-sm text-sm font-semibold tracking-widest uppercase font-sans cursor-pointer">
               Get in Touch
             </button>
             <a href="https://github.com/20R01A67E6" target="_blank" rel="noopener noreferrer"
-              style={{ padding: '1rem 2.5rem', background: 'transparent', color: '#d4af37', border: '1px solid rgba(212, 175, 55, 0.3)', borderRadius: '3px', fontSize: '0.85rem', fontWeight: '500', textDecoration: 'none', letterSpacing: '2px', textTransform: 'uppercase', fontFamily: "'DM Sans', sans-serif", transition: 'all 0.3s ease', textAlign: 'center' }}
-              onMouseEnter={(e) => { e.target.style.background = 'rgba(212, 175, 55, 0.08)'; }}
-              onMouseLeave={(e) => { e.target.style.background = 'transparent'; }}>GitHub</a>
+              className="outline-btn px-10 py-4 bg-transparent text-gold border border-gold/30 rounded-sm text-sm font-medium no-underline tracking-widest uppercase font-sans text-center">
+              GitHub
+            </a>
             <a href="https://www.linkedin.com/in/kandula-abhinav-reddy" target="_blank" rel="noopener noreferrer"
-              style={{ padding: '1rem 2.5rem', background: 'transparent', color: '#d4af37', border: '1px solid rgba(212, 175, 55, 0.3)', borderRadius: '3px', fontSize: '0.85rem', fontWeight: '500', textDecoration: 'none', letterSpacing: '2px', textTransform: 'uppercase', fontFamily: "'DM Sans', sans-serif", transition: 'all 0.3s ease', textAlign: 'center' }}
-              onMouseEnter={(e) => { e.target.style.background = 'rgba(212, 175, 55, 0.08)'; }}
-              onMouseLeave={(e) => { e.target.style.background = 'transparent'; }}>LinkedIn</a>
-            <a href="/resume.pdf" download="Abhinav Reddy Resume.pdf" style={{
-              padding: '1rem 2.5rem', background: 'transparent', color: '#d4af37',
-              border: '1px solid rgba(212, 175, 55, 0.3)', borderRadius: '3px', fontSize: '0.85rem',
-              fontWeight: '500', textDecoration: 'none', letterSpacing: '2px', textTransform: 'uppercase',
-              fontFamily: "'DM Sans', sans-serif", transition: 'all 0.3s ease', textAlign: 'center'
-            }}
-              onMouseEnter={(e) => { e.target.style.background = 'rgba(212, 175, 55, 0.08)'; }}
-              onMouseLeave={(e) => { e.target.style.background = 'transparent'; }}>↓ Resume</a>
+              className="outline-btn px-10 py-4 bg-transparent text-gold border border-gold/30 rounded-sm text-sm font-medium no-underline tracking-widest uppercase font-sans text-center">
+              LinkedIn
+            </a>
+            <a href="/resume.pdf" download="Abhinav Reddy Resume.pdf"
+              className="outline-btn px-10 py-4 bg-transparent text-gold border border-gold/30 rounded-sm text-sm font-medium no-underline tracking-widest uppercase font-sans text-center">
+              ↓ Resume
+            </a>
           </div>
 
-          {/* Scroll indicator - fades out on scroll */}
-          <div className="scroll-indicator" style={{
-            position: 'absolute', bottom: '1rem', left: '50%', transform: 'translateX(-50%)',
-            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem',
-            animation: 'float 3s ease-in-out infinite',
-            opacity: mounted ? Math.max(0, 1 - scrollY / 200) : 0,
-            transition: 'opacity 0.3s ease',
-            pointerEvents: mounted && scrollY > 50 ? 'none' : 'auto'
-          }}>
-            <span style={{ color: '#555', fontSize: '0.7rem', letterSpacing: '2px', textTransform: 'uppercase' }}>There's more below</span>
-            <div style={{ width: '1px', height: '25px', background: 'linear-gradient(to bottom, #d4af37, transparent)' }} />
+          {/* Scroll indicator */}
+          <div className="scroll-indicator absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+            style={{ animation: 'float 3s ease-in-out infinite', opacity: mounted ? Math.max(0, 1 - scrollY / 200) : 0, pointerEvents: mounted && scrollY > 50 ? 'none' : 'auto' }}>
+            <span className="text-gray-600 text-xs tracking-widest uppercase">There's more below</span>
+            <div className="w-px h-[25px]" style={{ background: 'linear-gradient(to bottom, #d4af37, transparent)' }} />
           </div>
         </section>
 
-        {/* Stats */}
-        <section data-animate id="stats" className="section-pad" style={{
-          padding: '4rem 3rem', maxWidth: '1200px', margin: '0 auto', borderTop: '1px solid rgba(255,255,255,0.04)',
-          opacity: vis('stats') ? 1 : 0, transform: vis('stats') ? 'none' : 'translateY(40px)', transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)', position: 'relative', zIndex: 1
-        }}>
-          <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.5rem' }}>
+        {/* ===== STATS ===== */}
+        <section data-animate id="stats" className={`section-pad py-16 px-12 max-w-[1200px] mx-auto border-t border-white/5 relative z-[1] section-reveal ${vis('stats') ? 'section-visible' : 'section-hidden'}`}>
+          <div className="stats-grid grid grid-cols-4 gap-6">
             {stats.map((s, i) => (
-              <div key={i} className="stat-card" style={{ padding: '2rem', textAlign: 'center', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '4px', background: 'rgba(255,255,255,0.01)' }}>
-                <div className="stat-number" style={{ fontFamily: "'Playfair Display', serif", fontSize: '2.5rem', fontWeight: '600', color: '#d4af37', marginBottom: '0.5rem' }}>{s.number}</div>
-                <div style={{ fontSize: '0.8rem', color: '#666', letterSpacing: '1px', textTransform: 'uppercase' }}>{s.label}</div>
+              <div key={i} className="stat-card p-8 text-center border border-white/5 rounded bg-white/[0.01]">
+                <div className="stat-number font-serif text-[2.5rem] font-semibold text-gold mb-2">{s.number}</div>
+                <div className="text-xs text-gray-500 tracking-widest uppercase">{s.label}</div>
               </div>
             ))}
           </div>
         </section>
 
-        {/* About */}
-        <section id="about" data-animate className="section-pad" style={{
-          padding: '8rem 3rem', maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1,
-          opacity: vis('about') ? 1 : 0, transform: vis('about') ? 'none' : 'translateY(40px)', transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)'
-        }}>
-          <div className="about-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1.3fr', gap: '5rem', alignItems: 'start' }}>
+        {/* ===== ABOUT ===== */}
+        <section id="about" data-animate className={`section-pad py-32 px-12 max-w-[1200px] mx-auto relative z-[1] section-reveal ${vis('about') ? 'section-visible' : 'section-hidden'}`}>
+          <div className="about-grid grid grid-cols-[1fr_1.3fr] gap-20 items-start">
             <div>
-              <p style={{ color: '#d4af37', fontSize: '0.82rem', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '1rem' }}>About</p>
-              <h2 className="section-heading" style={{ fontFamily: "'Playfair Display', serif", fontSize: '3rem', fontWeight: '500', lineHeight: 1.15, color: '#e8e6e3' }}>The story so far</h2>
-              <div style={{ width: '80px', height: '2px', background: 'linear-gradient(90deg, #d4af37, transparent)', marginTop: '2rem' }} />
+              <p className="text-gold text-xs tracking-[4px] uppercase mb-4">About</p>
+              <h2 className="section-heading font-serif text-5xl font-medium leading-tight text-gray-100">The story so far</h2>
+              <div className="gold-line mt-8" />
             </div>
             <div>
-              <p style={{ fontSize: '1.05rem', lineHeight: 2, color: '#888', marginBottom: '1.5rem', fontWeight: '300' }}>
+              <p className="text-base leading-loose text-gray-400 mb-6 font-light">
                 It started with a simple curiosity — how do machines learn to see? That question led me from writing my first Python script to training deep learning models on multi-GPU clusters. What began as late-night experiments with image classification evolved into a genuine obsession with making computers understand the visual world the way we do.
               </p>
-              <p style={{ fontSize: '1.05rem', lineHeight: 2, color: '#888', marginBottom: '1.5rem', fontWeight: '300' }}>
+              <p className="text-base leading-loose text-gray-400 mb-6 font-light">
                 Today at Analysis Express, I get to live that obsession every day. I build systems that read complex engineering drawings, something even experienced engineers find tedious, and turn them into structured, actionable data in seconds. When I saw our automation pipeline cut manual review time by 15% across the team, I knew this was exactly where I was meant to be.
               </p>
-              <p style={{ fontSize: '1.05rem', lineHeight: 2, color: '#888', fontWeight: '300' }}>
+              <p className="text-base leading-loose text-gray-400 font-light">
                 But I'm not just about AI. I love the entire journey from idea to deployment. Designing clean APIs, crafting intuitive interfaces, shipping products that real people rely on. Whether it's generating 100K training images from scratch or deploying a full-stack app on Vercel, I bring the same energy to everything I build.
               </p>
             </div>
           </div>
         </section>
 
-        {/* Experience */}
-        <section id="experience" data-animate className="section-pad" style={{
-          padding: '8rem 3rem', maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1,
-          opacity: vis('experience') ? 1 : 0, transform: vis('experience') ? 'none' : 'translateY(40px)', transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)'
-        }}>
-          <p style={{ color: '#d4af37', fontSize: '0.82rem', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '1rem' }}>Career</p>
-          <h2 className="section-heading" style={{ fontFamily: "'Playfair Display', serif", fontSize: '3rem', fontWeight: '500', marginBottom: '1rem', color: '#e8e6e3' }}>Experience</h2>
-          <div style={{ width: '80px', height: '2px', background: 'linear-gradient(90deg, #d4af37, transparent)', marginBottom: '4rem' }} />
+        {/* ===== EXPERIENCE ===== */}
+        <section id="experience" data-animate className={`section-pad py-32 px-12 max-w-[1200px] mx-auto relative z-[1] section-reveal ${vis('experience') ? 'section-visible' : 'section-hidden'}`}>
+          <p className="text-gold text-xs tracking-[4px] uppercase mb-4">Career</p>
+          <h2 className="section-heading font-serif text-5xl font-medium mb-4 text-gray-100">Experience</h2>
+          <div className="gold-line mb-16" />
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+          <div className="flex flex-col gap-10">
             {experiences.map((exp, i) => (
-              <div key={i} className="glow-card" onMouseMove={(e) => {
-                const rect = e.currentTarget.getBoundingClientRect();
-                e.currentTarget.style.setProperty('--mouse-x', `${((e.clientX - rect.left) / rect.width) * 100}%`);
-                e.currentTarget.style.setProperty('--mouse-y', `${((e.clientY - rect.top) / rect.height) * 100}%`);
-              }} style={{ padding: '2.5rem 2.5rem 2.5rem 3rem', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.05)', background: 'rgba(255,255,255,0.015)', borderLeft: '3px solid #d4af37' }}>
-                <div className="exp-header" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+              <div key={i} className="glow-card p-10 pl-12 rounded border border-white/5 bg-white/[0.015] border-l-[3px] border-l-gold"
+                onMouseMove={handleCardGlow}>
+                <div className="exp-header flex justify-between mb-6">
                   <div>
-                    <h3 style={{ fontSize: '1.3rem', fontWeight: '500', color: '#e8e6e3', marginBottom: '0.4rem' }}>{exp.title}</h3>
-                    <p style={{ color: '#d4af37', fontWeight: '400' }}>{exp.company}<span style={{ color: '#555', margin: '0 0.75rem' }}>·</span><span style={{ color: '#666', fontSize: '0.9rem' }}>{exp.location}</span></p>
+                    <h3 className="text-xl font-medium text-gray-100 mb-1.5">{exp.title}</h3>
+                    <p className="text-gold font-normal">
+                      {exp.company}<span className="text-gray-600 mx-3">·</span><span className="text-gray-500 text-sm">{exp.location}</span>
+                    </p>
                   </div>
-                  <span className="exp-period" style={{ color: '#555', fontSize: '0.9rem', whiteSpace: 'nowrap', fontWeight: '300' }}>{exp.period}</span>
+                  <span className="exp-period text-gray-600 text-sm whitespace-nowrap font-light">{exp.period}</span>
                 </div>
-                <ul style={{ listStyle: 'none', padding: 0 }}>
+                <ul className="list-none p-0">
                   {exp.highlights.map((h, j) => (
-                    <li key={j} style={{ color: '#777', fontSize: '0.95rem', lineHeight: 1.8, paddingLeft: '1.25rem', position: 'relative', marginBottom: '0.4rem' }}>
-                      <span style={{ position: 'absolute', left: 0, color: '#d4af37', fontSize: '0.7rem', top: '0.45rem' }}>◆</span>
+                    <li key={j} className="text-gray-400 text-[0.95rem] leading-relaxed pl-5 relative mb-2">
+                      <span className="absolute left-0 text-gold text-xs top-[0.45rem]">◆</span>
                       {h}
                     </li>
                   ))}
@@ -525,53 +345,44 @@ export default function Portfolio() {
           </div>
         </section>
 
-        {/* Skills */}
-        <section id="skills" data-animate className="section-pad" style={{
-          padding: '8rem 3rem', maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1,
-          opacity: vis('skills') ? 1 : 0, transform: vis('skills') ? 'none' : 'translateY(40px)', transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)'
-        }}>
-          <p style={{ color: '#d4af37', fontSize: '0.82rem', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '1rem' }}>Expertise</p>
-          <h2 className="section-heading" style={{ fontFamily: "'Playfair Display', serif", fontSize: '3rem', fontWeight: '500', marginBottom: '1rem', color: '#e8e6e3' }}>Skills</h2>
-          <div style={{ width: '80px', height: '2px', background: 'linear-gradient(90deg, #d4af37, transparent)', marginBottom: '4rem' }} />
+        {/* ===== SKILLS ===== */}
+        <section id="skills" data-animate className={`section-pad py-32 px-12 max-w-[1200px] mx-auto relative z-[1] section-reveal ${vis('skills') ? 'section-visible' : 'section-hidden'}`}>
+          <p className="text-gold text-xs tracking-[4px] uppercase mb-4">Expertise</p>
+          <h2 className="section-heading font-serif text-5xl font-medium mb-4 text-gray-100">Skills</h2>
+          <div className="gold-line mb-16" />
 
-          <div className="skills-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem 4rem' }}>
+          <div className="skills-grid grid grid-cols-2 gap-x-16 gap-y-8">
             {skillBars.map((s, i) => (
               <div key={i}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.6rem' }}>
-                  <span style={{ color: '#ccc', fontSize: '0.95rem' }}>{s.name}</span>
-                  <span style={{ color: '#d4af37', fontSize: '0.85rem' }}>{s.level}%</span>
+                <div className="flex justify-between mb-2">
+                  <span className="text-gray-300 text-[0.95rem]">{s.name}</span>
+                  <span className="text-gold text-sm">{s.level}%</span>
                 </div>
-                <div style={{ width: '100%', height: '4px', background: 'rgba(255,255,255,0.05)', borderRadius: '10px', overflow: 'hidden' }}>
-                  <div className={vis('skills') ? 'skill-bar-fill' : ''} style={{ width: vis('skills') ? `${s.level}%` : '0%', height: '100%', background: 'linear-gradient(90deg, #d4af37, #f4d03f)', borderRadius: '10px', animationDelay: `${i * 0.15}s` }} />
+                <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                  <div className={vis('skills') ? 'skill-bar-fill' : ''}
+                    style={{ width: vis('skills') ? `${s.level}%` : '0%', height: '100%', background: 'linear-gradient(90deg, #d4af37, #f4d03f)', borderRadius: '10px', animationDelay: `${i * 0.15}s` }} />
                 </div>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Projects */}
-        <section id="projects" data-animate className="section-pad" style={{
-          padding: '8rem 3rem', maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1,
-          opacity: vis('projects') ? 1 : 0, transform: vis('projects') ? 'none' : 'translateY(40px)', transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)'
-        }}>
-          <p style={{ color: '#d4af37', fontSize: '0.82rem', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '1rem' }}>Work</p>
-          <h2 className="section-heading" style={{ fontFamily: "'Playfair Display', serif", fontSize: '3rem', fontWeight: '500', marginBottom: '1rem', color: '#e8e6e3' }}>Featured Projects</h2>
-          <div style={{ width: '80px', height: '2px', background: 'linear-gradient(90deg, #d4af37, transparent)', marginBottom: '4rem' }} />
+        {/* ===== PROJECTS ===== */}
+        <section id="projects" data-animate className={`section-pad py-32 px-12 max-w-[1200px] mx-auto relative z-[1] section-reveal ${vis('projects') ? 'section-visible' : 'section-hidden'}`}>
+          <p className="text-gold text-xs tracking-[4px] uppercase mb-4">Work</p>
+          <h2 className="section-heading font-serif text-5xl font-medium mb-4 text-gray-100">Featured Projects</h2>
+          <div className="gold-line mb-16" />
 
-          <div className="projects-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+          <div className="projects-grid grid grid-cols-2 gap-8">
             {projects.map((proj, i) => (
-              <a key={i} href={proj.link} target="_blank" rel="noopener noreferrer" className="glow-card"
-                onMouseMove={(e) => {
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  e.currentTarget.style.setProperty('--mouse-x', `${((e.clientX - rect.left) / rect.width) * 100}%`);
-                  e.currentTarget.style.setProperty('--mouse-y', `${((e.clientY - rect.top) / rect.height) * 100}%`);
-                }}
-                style={{ padding: '2.5rem', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '4px', background: 'rgba(255,255,255,0.015)', textDecoration: 'none', color: 'inherit', display: 'block' }}>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: '500', color: '#e8e6e3', marginBottom: '0.75rem' }}>{proj.title}</h3>
-                <p style={{ color: '#777', fontSize: '0.95rem', lineHeight: 1.7, marginBottom: '1.5rem' }}>{proj.desc}</p>
-                <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
+              <a key={i} href={proj.link} target="_blank" rel="noopener noreferrer"
+                className="glow-card p-10 border border-white/5 rounded bg-white/[0.015] no-underline text-inherit block"
+                onMouseMove={handleCardGlow}>
+                <h3 className="text-xl font-medium text-gray-100 mb-3">{proj.title}</h3>
+                <p className="text-gray-400 text-[0.95rem] leading-relaxed mb-6">{proj.desc}</p>
+                <div className="flex gap-2.5 flex-wrap">
                   {proj.tags.map((t) => (
-                    <span key={t} style={{ fontSize: '0.78rem', padding: '0.35rem 0.85rem', border: '1px solid rgba(212, 175, 55, 0.2)', borderRadius: '2px', color: '#d4af37', background: 'rgba(212, 175, 55, 0.05)' }}>{t}</span>
+                    <span key={t} className="text-xs py-1.5 px-3.5 border border-gold/20 rounded-sm text-gold bg-gold/5">{t}</span>
                   ))}
                 </div>
               </a>
@@ -579,74 +390,79 @@ export default function Portfolio() {
           </div>
         </section>
 
-        {/* Certifications */}
-        <section id="certifications" data-animate className="section-pad" style={{
-          padding: '8rem 3rem', maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1,
-          opacity: vis('certifications') ? 1 : 0, transform: vis('certifications') ? 'none' : 'translateY(40px)', transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)'
-        }}>
-          <p style={{ color: '#d4af37', fontSize: '0.82rem', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '1rem' }}>Achievements</p>
-          <h2 className="section-heading" style={{ fontFamily: "'Playfair Display', serif", fontSize: '3rem', fontWeight: '500', marginBottom: '1rem', color: '#e8e6e3' }}>Certifications</h2>
-          <div style={{ width: '80px', height: '2px', background: 'linear-gradient(90deg, #d4af37, transparent)', marginBottom: '4rem' }} />
+        {/* ===== CERTIFICATIONS ===== */}
+        <section id="certifications" data-animate className={`section-pad py-32 px-12 max-w-[1200px] mx-auto relative z-[1] section-reveal ${vis('certifications') ? 'section-visible' : 'section-hidden'}`}>
+          <p className="text-gold text-xs tracking-[4px] uppercase mb-4">Achievements</p>
+          <h2 className="section-heading font-serif text-5xl font-medium mb-4 text-gray-100">Certifications</h2>
+          <div className="gold-line mb-16" />
 
           {loadingCerts ? (
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              {[0,1,2].map(i => <div key={i} style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#d4af37', animation: `pulse 1.2s infinite ${i * 0.2}s` }} />)}
+            <div className="flex gap-2">
+              {[0,1,2].map(i => <div key={i} className="w-2 h-2 rounded-full bg-gold" style={{ animation: `pulse 1.2s infinite ${i * 0.2}s` }} />)}
             </div>
           ) : certificates.length > 0 ? (
-            <div className="certs-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem' }}>
+            <div className="certs-grid grid grid-cols-3 gap-6">
               {certificates.map((cert, i) => (
-                <a key={i} href={cert.webViewLink} target="_blank" rel="noopener noreferrer" className="cert-card"
-                  style={{ padding: '2rem', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '4px', background: 'rgba(255,255,255,0.015)', textDecoration: 'none', color: 'inherit', display: 'block' }}>
-                  <h4 style={{ fontSize: '1.05rem', fontWeight: '500', color: '#e8e6e3', marginBottom: '0.75rem', lineHeight: 1.4 }}>{cert.name}</h4>
-                  <span style={{ color: '#d4af37', fontSize: '0.85rem' }}>View Certificate →</span>
+                <a key={i} href={cert.webViewLink} target="_blank" rel="noopener noreferrer"
+                  className="cert-card p-8 border border-white/5 rounded bg-white/[0.015] no-underline text-inherit block">
+                  <h4 className="text-base font-medium text-gray-100 mb-3 leading-snug">{cert.name}</h4>
+                  <span className="text-gold text-sm">View Certificate →</span>
                 </a>
               ))}
             </div>
           ) : (
-            <p style={{ color: '#555', fontSize: '1rem', fontStyle: 'italic' }}>Certifications coming soon.</p>
+            <p className="text-gray-600 text-base italic">Certifications coming soon.</p>
           )}
         </section>
 
-        {/* Contact */}
-        <section id="contact" data-animate className="section-pad" style={{
-          padding: '8rem 3rem', maxWidth: '800px', margin: '0 auto', position: 'relative', zIndex: 1,
-          opacity: vis('contact') ? 1 : 0, transform: vis('contact') ? 'none' : 'translateY(40px)', transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)'
-        }}>
-          <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-            <p style={{ color: '#d4af37', fontSize: '0.82rem', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '1rem' }}>Connect</p>
-            <h2 className="section-heading" style={{ fontFamily: "'Playfair Display', serif", fontSize: '3rem', fontWeight: '500', color: '#e8e6e3' }}>Let's Work Together</h2>
-            <div style={{ width: '80px', height: '2px', background: 'linear-gradient(90deg, transparent, #d4af37, transparent)', margin: '2rem auto' }} />
-            <p style={{ color: '#777', fontSize: '1.05rem', lineHeight: 1.9, fontWeight: '300' }}>Have a project in mind or want to discuss opportunities? I'd love to hear from you.</p>
+        {/* ===== CONTACT ===== */}
+        <section id="contact" data-animate className={`section-pad py-32 px-12 max-w-[800px] mx-auto relative z-[1] section-reveal ${vis('contact') ? 'section-visible' : 'section-hidden'}`}>
+          <div className="text-center mb-16">
+            <p className="text-gold text-xs tracking-[4px] uppercase mb-4">Connect</p>
+            <h2 className="section-heading font-serif text-5xl font-medium text-gray-100">Let's Work Together</h2>
+            <div className="gold-line-center my-8" />
+            <p className="text-gray-400 text-base leading-relaxed font-light">Have a project in mind or want to discuss opportunities? I'd love to hear from you.</p>
           </div>
 
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-            <div className="contact-inputs" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
-              <input type="text" placeholder="Name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required className="input-glow"
-                style={{ padding: '1rem 1.25rem', background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '3px', color: '#e8e6e3', fontSize: '0.95rem', fontFamily: "'DM Sans', sans-serif" }} />
-              <input type="email" placeholder="Email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} required className="input-glow"
-                style={{ padding: '1rem 1.25rem', background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '3px', color: '#e8e6e3', fontSize: '0.95rem', fontFamily: "'DM Sans', sans-serif" }} />
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            <div className="contact-inputs grid grid-cols-2 gap-5">
+              <input type="text" placeholder="Name" value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })} required
+                className="input-glow p-4 px-5 bg-white/[0.025] border border-white/[0.06] rounded-sm text-gray-100 text-[0.95rem] font-sans" />
+              <input type="email" placeholder="Email" value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })} required
+                className="input-glow p-4 px-5 bg-white/[0.025] border border-white/[0.06] rounded-sm text-gray-100 text-[0.95rem] font-sans" />
             </div>
-            <textarea placeholder="Your message" value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} required rows="6" className="input-glow"
-              style={{ padding: '1rem 1.25rem', background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '3px', color: '#e8e6e3', fontSize: '0.95rem', fontFamily: "'DM Sans', sans-serif", resize: 'none' }} />
-            <button type="submit" disabled={loading} className="submit-glow"
-              style={{ padding: '1rem', background: 'linear-gradient(135deg, #d4af37, #b8941e)', color: '#08080d', border: 'none', borderRadius: '3px', fontSize: '0.85rem', fontWeight: '600', letterSpacing: '2px', textTransform: 'uppercase', fontFamily: "'DM Sans', sans-serif", opacity: loading ? 0.6 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}>
+            <textarea placeholder="Your message" value={formData.message}
+              onChange={(e) => setFormData({ ...formData, message: e.target.value })} required rows="6"
+              className="input-glow p-4 px-5 bg-white/[0.025] border border-white/[0.06] rounded-sm text-gray-100 text-[0.95rem] font-sans resize-none" />
+            <button type="submit" disabled={loading}
+              className={`submit-glow p-4 bg-gradient-to-br from-gold to-gold-dark text-dark border-none rounded-sm text-sm font-semibold tracking-widest uppercase font-sans ${loading ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`}>
               {loading ? 'Sending...' : 'Send Message'}
             </button>
-            {submitted && <p style={{ color: '#d4af37', textAlign: 'center', fontSize: '0.95rem' }}>✓ Message sent successfully.</p>}
-            {error && <p style={{ color: '#e74c3c', textAlign: 'center', fontSize: '0.95rem' }}>{error}</p>}
+            {submitted && <p className="text-gold text-center text-[0.95rem]">✓ Message sent successfully.</p>}
+            {error && <p className="text-red-500 text-center text-[0.95rem]">{error}</p>}
           </form>
         </section>
 
-        {/* Footer */}
-        <footer className="section-pad" style={{ padding: '4rem 3rem', borderTop: '1px solid rgba(255,255,255,0.04)', position: 'relative', zIndex: 1 }}>
-          <div className="footer-inner" style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <p style={{ color: '#444', fontSize: '0.9rem', fontWeight: '300' }}>© 2026 Abhinav Reddy Kandula</p>
-            <div style={{ display: 'flex', gap: '2.5rem' }}>
-              {[{ label: 'GitHub', url: 'https://github.com/20R01A67E6' }, { label: 'LinkedIn', url: 'https://www.linkedin.com/in/kandula-abhinav-reddy' }, { label: 'Resume', url: '/resume.pdf' }, { label: 'Email', url: 'mailto:abhinavjsearch@gmail.com' }].map((l) => (
-                <a key={l.label} href={l.url} target={l.url.startsWith('mailto') || l.url.startsWith('/') ? undefined : '_blank'} rel="noopener noreferrer" className="footer-link"
+        {/* ===== FOOTER ===== */}
+        <footer className="section-pad py-16 px-12 border-t border-white/5 relative z-[1]">
+          <div className="footer-inner max-w-[1200px] mx-auto flex justify-between items-center">
+            <p className="text-gray-600 text-sm font-light">© 2026 Abhinav Reddy Kandula</p>
+            <div className="flex gap-10">
+              {[
+                { label: 'GitHub', url: 'https://github.com/20R01A67E6' },
+                { label: 'LinkedIn', url: 'https://www.linkedin.com/in/kandula-abhinav-reddy' },
+                { label: 'Resume', url: '/resume.pdf' },
+                { label: 'Email', url: 'mailto:abhinavjsearch@gmail.com' },
+              ].map((l) => (
+                <a key={l.label} href={l.url}
+                  target={l.url.startsWith('mailto') || l.url.startsWith('/') ? undefined : '_blank'}
+                  rel="noopener noreferrer"
+                  className="footer-link text-gray-500 no-underline text-sm tracking-widest uppercase"
                   download={l.url.endsWith('.pdf') ? "Abhinav Reddy Resume.pdf" : undefined}
-                  style={{ color: '#555', textDecoration: 'none', fontSize: '0.85rem', letterSpacing: '1.5px', textTransform: 'uppercase' }}
-                  onMouseEnter={(e) => e.target.style.color = '#d4af37'} onMouseLeave={(e) => e.target.style.color = '#555'}>
+                  onMouseEnter={(e) => e.target.style.color = '#d4af37'}
+                  onMouseLeave={(e) => e.target.style.color = '#666'}>
                   {l.label}
                 </a>
               ))}

@@ -1,157 +1,118 @@
-# Abhinav's Portfolio
+# Abhinav Reddy Kandula — Portfolio
 
-A full-stack portfolio website built with React, Next.js, Firebase, and Vercel.
+🔗 **Live:** [abhinav-reddy-kandula.vercel.app](https://abhinav-reddy-kandula.vercel.app)
 
-## Features
+A personal portfolio built from scratch with Next.js, React, and Firebase. Features real-time visitor tracking, automated email notifications, dynamic certifications from Google Drive, and a premium dark-themed design with interactive animations.
 
-- ✅ Modern dark theme with gradient UI
-- ✅ Dynamic certificates from Google Drive
-- ✅ Contact form with email notifications
-- ✅ Visitor tracking & analytics
-- ✅ Daily visitor summary emails
-- ✅ Fully responsive design
+---
 
 ## Tech Stack
 
-- **Frontend:** React 18 + Next.js 14 + Tailwind CSS
-- **Backend:** Vercel Serverless Functions
-- **Database:** Firebase Firestore
-- **Email:** SendGrid API
-- **Storage:** Google Drive API
-- **Deployment:** Vercel
+**Frontend:** React 18, Next.js 14, Tailwind CSS
 
-## Setup Instructions
+**Backend:** Vercel Serverless Functions
 
-### 1. Prerequisites
+**Database:** Firebase Firestore
 
-- Node.js 18+
-- GitHub account
-- Firebase account (free)
-- SendGrid account (free)
-- Google Cloud account (free)
+**Email:** SendGrid API
 
-### 2. Local Development
+**Certificates:** Google Drive API
 
-```bash
-npm install
-npm run dev
-```
+**Deployment:** Vercel + GitHub
 
-Open http://localhost:3000
+---
 
-### 3. Environment Variables
+## Features
 
-Create `.env.local` from `.env.local.template` and fill in your credentials:
+- Premium dark + gold themed design with custom cursor and glow effects
+- Typing animation cycling through roles
+- Scroll-triggered section reveals with animated skill bars
+- Fully responsive — mobile, tablet, and desktop
+- Hamburger menu for mobile navigation
+- Contact form with email notifications via SendGrid
+- Real-time visitor tracking stored in Firebase Firestore
+- Automated daily visitor summary emails via Vercel Cron Jobs
+- Dynamic certifications fetched from Google Drive
+- Resume download with custom filename
+- Open Graph image for rich link previews on LinkedIn, WhatsApp, and Twitter
+- SEO optimized with sitemap.xml and robots.txt
+- Custom branded 404 page
 
-```bash
-cp .env.local.template .env.local
-# Edit .env.local with your credentials
-```
-
-### 4. Deploy to Vercel
-
-1. Push to GitHub
-2. Go to vercel.com/new
-3. Import your portfolio repo
-4. Add environment variables
-5. Deploy
+---
 
 ## Project Structure
 
 ```
 portfolio/
 ├── app/
-│   ├── page.jsx           # Main portfolio component
-│   ├── layout.jsx         # Root layout
-│   └── globals.css        # Global styles
+│   ├── page.jsx              # Main portfolio component
+│   ├── layout.jsx            # Root layout with SEO metadata
+│   ├── globals.css            # Tailwind + custom animations
+│   ├── not-found.jsx          # Custom 404 page
+│   ├── sitemap.js             # Auto-generated sitemap
+│   ├── robots.js              # Search engine crawl rules
+│   └── favicon.ico            # Site favicon
 ├── api/
-│   ├── getCertificates.js # Google Drive integration
-│   ├── submitForm.js      # Form & email handler
-│   ├── trackVisit.js      # Visit tracking
-│   └── sendDailyVisitorSummary.js # Daily emails (Cron)
-├── .env.local.template    # Environment variables template
-├── vercel.json            # Vercel config + Cron
-├── package.json           # Dependencies
-└── README.md              # This file
+│   ├── submitForm.js          # Contact form handler + SendGrid
+│   ├── trackVisit.js          # Visitor tracking to Firestore
+│   ├── getCertificates.js     # Google Drive certificate fetcher
+│   └── sendDailyVisitorSummary.js  # Daily email cron job
+├── public/
+│   ├── Abhinav-Reddy-Resume.pdf
+│   ├── og-image.png
+│   ├── favicon.ico
+│   └── favicon.png
+├── tailwind.config.js
+├── vercel.json
+└── package.json
 ```
-
-## API Endpoints
-
-- `GET /api/getCertificates` - Fetch certificates from Google Drive
-- `POST /api/submitForm` - Handle contact form submissions
-- `GET /api/trackVisit` - Track page visits (auto-called)
-- `POST /api/sendDailyVisitorSummary` - Send daily summary (Cron job)
-
-## Credentials Setup
-
-### Firebase
-1. Create project at firebase.google.com
-2. Create web app
-3. Create Firestore database
-4. Create service account JSON
-5. Publish security rules
-
-### SendGrid
-1. Create free account at sendgrid.com
-2. Generate API key
-3. Verify sender email
-
-### Google Cloud
-1. Create project at console.cloud.google.com
-2. Enable Google Drive API
-3. Create service account
-4. Share certificates folder with service account
-
-## Security
-
-- Never commit `.env.local` to GitHub
-- Keep API keys confidential
-- Use `.env.local.template` for sharing
-- Firebase security rules prevent unauthorized access
-
-## Customization
-
-### Change Content
-
-Edit `app/page.jsx` to update:
-- About section
-- Experience details
-- Project list
-- Skills
-- Education
-
-### Change Colors
-
-Look for Tailwind color classes like:
-- `from-blue-400` - Primary color
-- `from-purple-500` - Secondary color
-- `slate-900` - Background
-
-### Change Email Recipient
-
-In API files, update:
-```javascript
-to: 'your_email@example.com'
-```
-
-## Monitoring
-
-- **Form Submissions:** Firebase Firestore `formSubmissions` collection
-- **Visitor Analytics:** Firebase Firestore `visits` collection
-- **Email Delivery:** SendGrid dashboard
-- **Deployment:** Vercel dashboard
-
-## Support
-
-- **Vercel:** https://vercel.com/docs
-- **Next.js:** https://nextjs.org/docs
-- **Firebase:** https://firebase.google.com/docs
-- **SendGrid:** https://docs.sendgrid.com
-
-## License
-
-MIT License - Feel free to customize!
 
 ---
 
-**Built with ❤️ by Abhinav**
+## Getting Started
+
+1. Clone the repo
+   ```bash
+   git clone https://github.com/20R01A67E6/portfolio.git
+   cd portfolio
+   ```
+
+2. Install dependencies
+   ```bash
+   npm install
+   ```
+
+3. Create `.env.local` with your credentials
+   ```
+   FIREBASE_API_KEY=your_key
+   FIREBASE_PROJECT_ID=your_project_id
+   SENDGRID_API_KEY=your_sendgrid_key
+   SENDGRID_FROM_EMAIL=your_email
+   GOOGLE_DRIVE_FOLDER_ID=your_folder_id
+   GOOGLE_SERVICE_ACCOUNT_JSON=your_service_account_json
+   CRON_SECRET=your_secret
+   ```
+
+4. Run locally
+   ```bash
+   npm run dev
+   ```
+
+5. Open [http://localhost:3000](http://localhost:3000)
+
+---
+
+## Deployment
+
+Deployed on [Vercel](https://vercel.com) with automatic deployments on push to `main` branch. Environment variables are configured in the Vercel dashboard.
+
+---
+
+## Contact
+
+**Abhinav Reddy Kandula**
+
+- Portfolio: [abhinav-reddy-kandula.vercel.app](https://abhinav-reddy-kandula.vercel.app)
+- LinkedIn: [linkedin.com/in/kandula-abhinav-reddy](https://www.linkedin.com/in/kandula-abhinav-reddy)
+- GitHub: [github.com/20R01A67E6](https://github.com/20R01A67E6)
+- Email: abhinavjsearch@gmail.com

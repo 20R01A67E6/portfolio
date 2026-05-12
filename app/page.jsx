@@ -265,7 +265,7 @@ export default function Portfolio() {
               className="outline-btn px-10 py-4 bg-transparent text-gold border border-gold/30 rounded-sm text-sm font-medium no-underline tracking-widest uppercase font-sans text-center">
               LinkedIn
             </a>
-            <a href="/resume.pdf" download="Abhinav Reddy Resume.pdf"
+            <a href="/Abhinav-Reddy-Resume.pdf" download="Abhinav Reddy Resume.pdf"
               className="outline-btn px-10 py-4 bg-transparent text-gold border border-gold/30 rounded-sm text-sm font-medium no-underline tracking-widest uppercase font-sans text-center">
               ↓ Resume
             </a>

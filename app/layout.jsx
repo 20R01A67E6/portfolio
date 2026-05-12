@@ -1,8 +1,11 @@
 import './globals.css'
 
 export const metadata = {
-  title: 'Abhinav Reddy Kandula - Portfolio',
-  description: 'Software Engineer | AI/ML Specialist | Computer Vision Engineer',
+  title: 'Abhinav Reddy Kandula — Software Developer & AI/ML Engineer',
+  description: 'Software Developer and AI/ML Engineer specializing in computer vision, deep learning, and full-stack development. Currently building intelligent systems at Analysis Express.',
+  keywords: ['Abhinav Reddy Kandula', 'Software Developer', 'AI Engineer', 'ML Engineer', 'Computer Vision', 'YOLO', 'Python', 'React', 'Next.js', 'Full Stack Developer', 'Cincinnati'],
+  authors: [{ name: 'Abhinav Reddy Kandula' }],
+  creator: 'Abhinav Reddy Kandula',
   icons: {
     icon: [
       { url: '/favicon.ico' },
@@ -10,10 +13,37 @@ export const metadata = {
     ],
   },
   openGraph: {
-    title: 'Abhinav Reddy Kandula',
-    description: 'Personal portfolio and projects',
+    title: 'Abhinav Reddy Kandula — Software Developer & AI/ML Engineer',
+    description: 'Explore my work in computer vision, deep learning, and full-stack development. Featuring real projects, experience, and certifications.',
     url: 'https://abhinav-portfolio.vercel.app',
+    siteName: 'Abhinav Reddy Kandula Portfolio',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 627,
+        alt: 'Abhinav Reddy Kandula — Software Developer & AI/ML Engineer',
+      },
+    ],
+    locale: 'en_US',
     type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Abhinav Reddy Kandula — Software Developer & AI/ML Engineer',
+    description: 'Software Developer and AI/ML Engineer specializing in computer vision, deep learning, and full-stack development.',
+    images: ['/og-image.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
 }
 

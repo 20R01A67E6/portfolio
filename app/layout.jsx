@@ -15,7 +15,7 @@ export const metadata = {
   openGraph: {
     title: 'Abhinav Reddy Kandula — Software Developer & AI/ML Engineer',
     description: 'Explore my work in computer vision, deep learning, and full-stack development. Featuring real projects, experience, and certifications.',
-    url: 'https://abhinav-portfolio.vercel.app',
+    url: 'https://abhinav-reddy-kandula.vercel.app',
     siteName: 'Abhinav Reddy Kandula Portfolio',
     images: [
       {

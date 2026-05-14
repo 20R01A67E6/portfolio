@@ -153,7 +153,7 @@ export default function Portfolio() {
 
   const projects = [
     { title: "privtrain-demo", desc: "An end-to-end privacy-preserving machine learning training system. Built this to explore how differential privacy can protect sensitive training data without sacrificing model accuracy. The demo walks through the full pipeline from data preprocessing to private model training and evaluation.", tags: ["Python", "ML", "Differential Privacy"], link: "https://privtrain-demo.vercel.app/" },
-    { title: "YOLO Face Detection", desc: "A real-time face detection system built with the YOLO architecture. Takes live webcam input and identifies faces with bounding boxes at 30+ FPS. Trained on custom datasets and optimized for low-latency inference, making it practical for real-world applications like attendance tracking.", tags: ["YOLO", "OpenCV", "Deep Learning"], link: "https://github.com/20R01A67E6/YOLO-face-detection" }
+    { title: "RAGaii", desc: "A full-stack AI-powered RAG platform built from scratch. Upload documents, codebases, product catalogs, or news feeds and ask questions in plain English to get instant AI-powered answers. Features 5 distinct modes, dual LLM support with Groq and Gemini with automatic fallback, Supabase authentication, pgvector embeddings, and a fully responsive dashboard.", tags: ["Next.js", "FastAPI", "Python", "Supabase", "pgvector", "Groq", "Gemini"], link: "https://ragaii.vercel.app" }
   ];
 
   const skillBars = [
@@ -265,7 +265,7 @@ export default function Portfolio() {
               className="outline-btn px-10 py-4 bg-transparent text-gold border border-gold/30 rounded-sm text-sm font-medium no-underline tracking-widest uppercase font-sans text-center">
               LinkedIn
             </a>
-            <a href="/Abhinav-Reddy-Resume.pdf" download="Abhinav Reddy Resume.pdf"
+            <a href="/resume.pdf" download="Abhinav Reddy Resume.pdf"
               className="outline-btn px-10 py-4 bg-transparent text-gold border border-gold/30 rounded-sm text-sm font-medium no-underline tracking-widest uppercase font-sans text-center">
               ↓ Resume
             </a>

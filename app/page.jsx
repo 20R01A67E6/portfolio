@@ -152,7 +152,7 @@ export default function Portfolio() {
   ];
 
   const projects = [
-    { title: "privtrain-demo", desc: "An end-to-end privacy-preserving machine learning training system. Built this to explore how differential privacy can protect sensitive training data without sacrificing model accuracy. The demo walks through the full pipeline from data preprocessing to private model training and evaluation.", tags: ["Python", "ML", "Differential Privacy"], link: "https://privtrain-demo.vercel.app/" },
+    { title: "privtrain", desc: "An end-to-end privacy-preserving machine learning training system. Built this to explore how differential privacy can protect sensitive training data without sacrificing model accuracy. The demo walks through the full pipeline from data preprocessing to private model training and evaluation.", tags: ["Python", "ML", "Differential Privacy"], link: "https://privtrain-demo.vercel.app/" },
     { title: "RAGaii", desc: "A full-stack AI-powered RAG platform built from scratch. Upload documents, codebases, product catalogs, or news feeds and ask questions in plain English to get instant AI-powered answers. Features 5 distinct modes, dual LLM support with Groq and Gemini with automatic fallback, Supabase authentication, pgvector embeddings, and a fully responsive dashboard.", tags: ["Next.js", "FastAPI", "Python", "Supabase", "pgvector", "Groq", "Gemini"], link: "https://ragaii.vercel.app" }
   ];
 
